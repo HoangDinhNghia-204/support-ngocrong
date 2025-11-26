@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Holo Drop Tracker v12 - Final Fix</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="bg-base"></div>
+    <div class="bg-grid-overlay"></div>
+    <div class="bg-vignette"></div>
+    <div class="side-panel left-panel d-none d-xl-flex">
+      <div class="panel-header"><i class="fas fa-terminal"></i> SYSTEM LOG</div>
+      <div class="log-content" id="system-log-console">
+        <div class="log-line">
+          <span class="time">[INIT]</span> Hệ thống đã khởi tạo...
+        </div>
+        <div class="log-line">
+          <span class="time">[CONN]</span> Đã kết nối cơ sở dữ liệu...
+        </div>
+      </div>
+    </div>
+
+    <div class="side-panel right-panel d-none d-xl-flex">
+      <div class="panel-header"><i class="fas fa-bolt"></i> QUICK ACCESS</div>
+
+      <div class="quick-group">
+        <div class="group-label">BẢN ĐỒ PHỔ BIẾN</div>
+        <div id="quick-maps-list"></div>
+      </div>
+
+      <div class="quick-group">
+        <div class="group-label">LOẠI VẬT PHẨM</div>
+        <button
+          class="quick-btn btn-xayda"
+          onclick="quickSearch('item', 'Xayda')"
+        >
+          Đồ Xayda
+        </button>
+        <button
+          class="quick-btn btn-namec"
+          onclick="quickSearch('item', 'Namếc')"
+        >
+          Đồ Namếc
+        </button>
+        <button
+          class="quick-btn btn-linh"
+          onclick="quickSearch('item', 'Thần Linh')"
+        >
+          Đồ Thần Linh
+        </button>
+      </div>
+    </div>
+
+    <div id="cyber-toast" class="cyber-toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toast-msg">ĐÃ SAO CHÉP</span>
+    </div>
+    <button id="btn-back-to-top" onclick="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="container py-4 main-container">
+      <div class="header-hud text-center mb-4">
+        <h1 class="main-title glitch" data-text="DROP TRACKER">
+          DROP TRACKER <span class="ver">ADAPTIVE</span>
+        </h1>
+        <div class="d-flex justify-content-center gap-3 align-items-center">
+          <div class="live-clock" id="live-clock">00:00:00</div>
+          <button class="btn-sound" id="btn-sound" onclick="toggleSound()">
+            <i class="fas fa-volume-up"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row mb-4 g-3 align-items-stretch">
+        <div class="col-lg-4 d-flex flex-column">
+          <div class="stats-column h-100">
+            <div class="stat-card">
+              <div class="stat-label">KHU VỰC HOT</div>
+              <div class="stat-value text-danger" id="stat-map">--</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">VẬT PHẨM TOP</div>
+              <div class="stat-value text-warning" id="stat-item">--</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">TỔNG DỮ LIỆU</div>
+              <div class="stat-value text-info" id="stat-total">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8 d-flex flex-column">
+          <div class="chart-card h-100">
+            <div class="chart-header">
+              <div class="chart-tabs">
+                <button class="tab-btn active" onclick="switchTab('maps')">
+                  BẢN ĐỒ
+                </button>
+                <button class="tab-btn" onclick="switchTab('items')">
+                  VẬT PHẨM
+                </button>
+                <button class="tab-btn" onclick="switchTab('time')">
+                  HOẠT ĐỘNG
+                </button>
+                <button class="tab-btn" onclick="switchTab('analysis')">
+                  PHÂN TÍCH
+                </button>
+                <button class="tab-btn" onclick="switchTab('economy')">
+                  VÀNG/Ngọc
+                </button>
+              </div>
+            </div>
+
+            <div class="chart-body">
+              <div id="chart-view-maps" class="chart-view active"></div>
+              <div id="chart-view-items" class="chart-view"></div>
+              <div id="chart-view-time" class="chart-view">
+                <div class="time-chart-container" id="time-bars"></div>
+              </div>
+
+              <div id="chart-view-analysis" class="chart-view">
+                <div class="row g-3 h-100">
+                  <div
+                    class="col-md-7 border-end border-secondary border-opacity-10"
+                  >
+                    <div class="h-100 d-flex flex-column">
+                      <div
+                        class="text-warning mb-2 font-monospace fw-bold"
+                        style="font-size: 0.85rem"
+                      >
+                        <i class="fas fa-crosshairs me-1"></i> LỊCH SĂN ĐỒ GỢI Ý
+                        (AUTO)
+                      </div>
+                      <div
+                        class="hunting-schedule-container flex-grow-1"
+                        id="hunting-schedule-list"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-5">
+                    <div
+                      class="h-100 d-flex flex-column justify-content-start gap-3"
+                    >
+                      <div
+                        class="p-2 rounded bg-dark bg-opacity-25 border border-warning border-opacity-25"
+                      >
+                        <div
+                          class="text-info mb-1 font-monospace fw-bold"
+                          style="font-size: 0.8rem"
+                        >
+                          <i class="fas fa-clock me-1"></i> GIỜ HOÀNG ĐẠO (HOT)
+                        </div>
+                        <div
+                          id="golden-hours-list"
+                          class="d-flex flex-wrap gap-2 mt-2"
+                        ></div>
+                      </div>
+
+                      <div
+                        class="p-2 rounded bg-dark bg-opacity-25 border border-success border-opacity-25 flex-grow-1"
+                      >
+                        <div
+                          class="text-success mb-1 font-monospace fw-bold"
+                          style="font-size: 0.8rem"
+                        >
+                          <i class="fas fa-chart-pie me-1"></i> TOP MAP DROP
+                        </div>
+                        <div
+                          id="top-map-analysis"
+                          class="mt-2"
+                          style="font-size: 0.85rem"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="chart-view-economy" class="chart-view">
+                <div class="d-flex justify-content-center mb-2 gap-3">
+                  <button
+                    class="sub-tab-btn active"
+                    id="btnSubGold"
+                    onclick="switchSubTab('gold')"
+                    style="padding: 4px 15px; font-size: 0.75rem"
+                  >
+                    <i class="fas fa-coins text-warning"></i> TÍNH VÀNG
+                  </button>
+                  <button
+                    class="sub-tab-btn"
+                    id="btnSubGem"
+                    onclick="switchSubTab('gem')"
+                    style="padding: 4px 15px; font-size: 0.75rem"
+                  >
+                    <i class="fas fa-gem text-danger"></i> TÍNH NGỌC
+                  </button>
+                </div>
+
+                <div id="sub-view-gold" class="sub-view active">
+                  <div class="row h-100 align-items-start g-0">
+                    <div
+                      class="col-md-6 border-end border-secondary border-opacity-10 pe-2"
+                    >
+                      <div class="p-1">
+                        <div
+                          class="text-info mb-1 font-monospace fw-bold"
+                          style="font-size: 0.8rem"
+                        >
+                          > ĐỔI: VÀNG
+                          <i class="fas fa-exchange-alt mx-1"></i> THỎI
+                        </div>
+
+                        <div
+                          class="input-wrapper mb-2 highlight-border"
+                          style="padding: 6px 10px"
+                        >
+                          <i
+                            class="fas fa-coins text-warning"
+                            style="font-size: 0.9rem"
+                          ></i>
+                          <input
+                            type="text"
+                            id="leftInputGold"
+                            placeholder="Nhập số vàng..."
+                            oninput="calcLeft_GoldChange()"
+                            style="font-size: 0.9rem"
+                          />
+                        </div>
+
+                        <div
+                          class="text-center text-secondary mb-2"
+                          style="font-size: 0.65rem; opacity: 0.5"
+                        >
+                          <i class="fas fa-arrow-up"></i> 1 Thỏi = 37tr Vàng
+                          <i class="fas fa-arrow-down"></i>
+                        </div>
+
+                        <div
+                          class="input-wrapper mb-1 highlight-border"
+                          style="padding: 6px 10px"
+                        >
+                          <i
+                            class="fas fa-cube text-info"
+                            style="font-size: 0.9rem"
+                          ></i>
+                          <input
+                            type="text"
+                            id="leftInputIngot"
+                            placeholder="Nhập số thỏi..."
+                            oninput="calcLeft_IngotChange()"
+                            style="font-size: 0.9rem"
+                          />
+                          <span
+                            class="badge-rate"
+                            style="font-size: 0.65rem; padding: 2px 5px"
+                            >THỎI</span
+                          >
+                        </div>
+
+                        <div
+                          class="text-end text-secondary fst-italic"
+                          style="font-size: 0.7rem"
+                        >
+                          Dư:
+                          <span id="leftResRemainder" class="text-white fw-bold"
+                            >0</span
+                          >
+                          vàng
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 ps-2">
+                      <div class="p-1">
+                        <div
+                          class="text-success mb-1 font-monospace fw-bold"
+                          style="font-size: 0.8rem"
+                        >
+                          > GIÁ VÀNG THỊ TRƯỜNG
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                          <div class="col-4">
+                            <div
+                              class="input-wrapper highlight-border"
+                              style="padding: 6px 10px"
+                            >
+                              <input
+                                type="number"
+                                id="rightInputRate"
+                                placeholder="9.5"
+                                oninput="calcRight_RateChange()"
+                                style="font-size: 0.9rem"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-8">
+                            <div
+                              class="input-wrapper highlight-border"
+                              style="padding: 6px 10px"
+                            >
+                              <input
+                                type="text"
+                                id="rightInputMoney"
+                                class="text-end pe-2"
+                                placeholder="Nhập tiền..."
+                                oninput="calcRight_MoneyChange()"
+                                style="font-size: 0.9rem"
+                              />
+                              <span
+                                class="badge-vnd"
+                                style="font-size: 0.65rem; padding: 2px 5px"
+                                >VNĐ</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="text-center text-secondary mb-2"
+                          style="font-size: 0.65rem; opacity: 0.5"
+                        >
+                          <i class="fas fa-exchange-alt"></i> Tự động quy đổi
+                        </div>
+
+                        <div
+                          class="input-wrapper highlight-border"
+                          style="padding: 6px 10px"
+                        >
+                          <i
+                            class="fas fa-sack-dollar text-warning"
+                            style="font-size: 0.9rem"
+                          ></i>
+                          <input
+                            type="text"
+                            id="rightInputGold"
+                            placeholder="Nhập tổng vàng..."
+                            oninput="calcRight_GoldChange()"
+                            style="font-size: 0.9rem"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="sub-view-gem" class="sub-view" style="display: none">
+                  <div
+                    class="d-flex flex-column align-items-center justify-content-start pt-2"
+                  >
+                    <div class="col-12">
+                      <div
+                        class="p-2 border border-danger border-opacity-25 rounded bg-dark bg-opacity-25"
+                      >
+                        <div
+                          class="text-danger mb-2 font-monospace fw-bold text-center"
+                          style="font-size: 0.85rem; letter-spacing: 1px"
+                        >
+                          <i class="fas fa-gem me-2"></i> Giá ngọc ký siêu thị
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                          <div class="col-5">
+                            <div
+                              class="input-wrapper highlight-border"
+                              style="padding: 6px 10px"
+                            >
+                              <input
+                                type="number"
+                                id="gemRateInput"
+                                class="text-center"
+                                placeholder="14.5"
+                                oninput="calcGem()"
+                                style="font-size: 0.9rem"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-7">
+                            <div
+                              class="input-wrapper highlight-border"
+                              style="padding: 6px 10px"
+                            >
+                              <input
+                                type="text"
+                                id="gemMoneyInput"
+                                class="text-end pe-2"
+                                oninput="calcGem()"
+                                style="font-size: 0.9rem"
+                              />
+                              <span
+                                class="badge-vnd bg-danger bg-opacity-10 border-danger text-danger"
+                                style="font-size: 0.65rem; padding: 2px 5px"
+                                >VNĐ</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="result-card p-2 rounded border-danger"
+                          style="background: rgba(20, 0, 0, 0.3)"
+                        >
+                          <div
+                            class="d-flex justify-content-between align-items-center mb-1"
+                          >
+                            <span
+                              class="text-secondary"
+                              style="font-size: 0.75rem"
+                              >TỔNG NGỌC NHẬN:</span
+                            >
+                            <span
+                              class="text-white fw-bold"
+                              id="resGemTotal"
+                              style="font-size: 1rem"
+                              >0</span
+                            >
+                          </div>
+                          <div
+                            class="border-top border-secondary border-opacity-25 my-1"
+                          ></div>
+                          <div
+                            class="d-flex justify-content-between align-items-center"
+                          >
+                            <span
+                              class="text-warning"
+                              style="font-size: 0.75rem"
+                              >THỰC NHẬN (-5%):</span
+                            >
+                            <span
+                              class="text-danger fw-bold"
+                              id="resGemReal"
+                              style="font-size: 1.2rem"
+                              >0</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sticky-wrapper">
+        <div class="search-deck">
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-3 search-col">
+              <div class="input-wrapper highlight-border">
+                <i class="far fa-calendar-alt text-warning"></i>
+                <select
+                  id="dateFilter"
+                  class="cyber-select"
+                  onchange="filterData()"
+                ></select>
+              </div>
+            </div>
+            <div class="col-12 col-md-3 search-col">
+              <div class="input-wrapper">
+                <i class="fas fa-map-location"></i>
+                <input type="text" id="filterMap" placeholder="Tìm bản đồ..." />
+              </div>
+            </div>
+            <div class="col-10 col-md-3 search-col">
+              <div class="input-wrapper">
+                <i class="fas fa-cube"></i>
+                <input
+                  type="text"
+                  id="filterItem"
+                  placeholder="Tên vật phẩm..."
+                />
+              </div>
+            </div>
+            <div class="col-2 col-md-3 d-flex gap-2 justify-content-end">
+              <button
+                class="btn-action btn-reset"
+                onclick="resetFilters()"
+                title="Làm mới"
+              >
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button
+                class="btn-action btn-export"
+                onclick="exportToCSV()"
+                title="Xuất CSV"
+              >
+                <i class="fas fa-file-download"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-header d-none d-md-flex">
+          <span>THỜI GIAN</span>
+          <span>NHẬT KÝ SỰ KIỆN</span>
+        </div>
+      </div>
+
+      <div class="timeline-feed">
+        <div id="tableBody" class="feed-body"></div>
+      </div>
+
+      <div class="sys-stat text-center mt-4 mb-3">
+        <span class="terminal-text" id="terminal-text"></span
+        ><span class="cursor"></span>
+      </div>
+
+      <footer class="dev-footer">
+        <div class="footer-glitch-line"></div>
+        <div class="footer-content">
+          <span class="code-brackets">&lt;</span>
+          SYSTEM: <span class="dev-name" data-text="T-DEV 29">T-DEV 29</span>
+          <span class="code-brackets">/&gt;</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
