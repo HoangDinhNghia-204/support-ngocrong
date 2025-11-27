@@ -1,6 +1,7 @@
 // --- DỮ LIỆU KHỞI TẠO ---
 const rawData = [
   // Dữ liệu MỚI NHẤT (Ngày 27/11/2025)
+  { time: "15:24 - 27/11/2025", item: "Giầy Thần Namếc", map: "Dòng sông băng" },
   { time: "09:54 - 27/11/2025", item: "Quần Thần Xayda", map: "Rừng băng" },
   { time: "07:54 - 27/11/2025", item: "Áo Thần Namếc", map: "Hang băng" },
   { time: "05:54 - 27/11/2025", item: "Quần Thần Xayda", map: "Núi tuyết" },
