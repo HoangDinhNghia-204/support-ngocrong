@@ -2,7 +2,10 @@
 const rawData = [
 
   // Dữ liệu MỚI NHẤT (Ngày 29/11/2025)
-  { time: "11:56 - 29/11/2025", item: "Áo Thần Namec", map: "Núi tuyết" },
+  { time: "17:57 - 29/11/2025", item: "Áo Thần Linh", map: "Rừng tuyết" },
+  { time: "15:57 - 29/11/2025", item: "Giầy Thần Linh", map: "Dòng sông băng" },
+  { time: "13:57 - 29/11/2025", item: "Áo Thần Linh", map: "Hang băng" },
+  { time: "11:57 - 29/11/2025", item: "Áo Thần Namec", map: "Núi tuyết" },
   { time: "09:56 - 29/11/2025", item: "Áo Thần Namec", map: "Núi tuyết" },
   { time: "07:50 - 29/11/2025", item: "Giầy Thần Xayda", map: "Rừng tuyết" },
   { time: "02:05 - 29/11/2025", item: "Quần Thần Namec", map: "Dòng sông băng" },
