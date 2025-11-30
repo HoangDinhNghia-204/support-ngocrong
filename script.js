@@ -2,6 +2,7 @@
 const rawData = [
 
   // Dữ liệu MỚI NHẤT (Ngày 30/11/2025)
+  { time: "17:13 - 30/11/2025", item: "Áo Thần Xayda", map: "Cánh đồng tuyết" },
   { time: "15:12 - 30/11/2025", item: "Găng Thần Linh", map: "Cánh đồng tuyết" },
   { time: "13:11 - 30/11/2025", item: "Găng Thần Xayda", map: "Rừng tuyết" },
   { time: "09:58 - 30/11/2025", item: "Giầy Thần Linh", map: "Hang băng" },
