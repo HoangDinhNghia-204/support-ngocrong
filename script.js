@@ -1,6 +1,13 @@
 // --- DỮ LIỆU KHỞI TẠO ---
 const rawData = [
 
+  // Dữ liệu MỚI NHẤT (Ngày 30/11/2025)
+  { time: "09:58 - 29/11/2025", item: "Giầy Thần Linh", map: "Hang băng" },
+  { time: "07:59 - 29/11/2025", item: "Áo Thần Xayda", map: "Núi tuyết" },
+  { time: "07:58 - 29/11/2025", item: "Nhẫn Thần Linh", map: "Cánh đồng tuyết" },
+  { time: "05:58 - 29/11/2025", item: "Giầy Thần Linh", map: "Cánh đồng tuyết" },
+  { time: "02:27 - 29/11/2025", item: "Găng Thần Xayda", map: "Núi tuyết" },
+  { time: "00:27 - 29/11/2025", item: "Giầy Thần Linh", map: "Cánh đồng tuyết" },
   // Dữ liệu MỚI NHẤT (Ngày 29/11/2025)
   { time: "20:44 - 29/11/2025", item: "Quần Thần Xayda", map: "Dòng sông băng" },
   { time: "17:57 - 29/11/2025", item: "Áo Thần Linh", map: "Rừng tuyết" },
